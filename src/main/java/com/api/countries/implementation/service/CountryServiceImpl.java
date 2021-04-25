@@ -5,6 +5,7 @@ import com.api.countries.interfaces.mapper.ICountryMapper;
 import com.api.countries.interfaces.service.ICountryService;
 import com.api.countries.model.Country;
 import com.api.countries.repository.ICountryRepository;
+import com.api.countries.utils.exceptions.CountryDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,9 @@ public class CountryServiceImpl implements ICountryService {
      */
     @Override
     public CountryStdOutDto findById(Long id) {
-
+        if(!iCountryRepository.existsById(id)){
+            throw  new CountryDoesNotExistException("Country with id " +id+" does not exist");
+        }
         Country country = iCountryRepository.findById(id).get();
         CountryStdOutDto countryStdOutDto = ICountryMapper.INSTANCE.asCountryToCountryStdOutDto(country);
         return countryStdOutDto;
